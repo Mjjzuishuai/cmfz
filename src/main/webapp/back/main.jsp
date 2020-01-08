@@ -167,6 +167,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#chat">
+                                聊天室
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="chat" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="nav">
+                                <li><a href="javascript:$('#right').load('./chat.jsp')">多人聊天</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-xs-10" id="right">
