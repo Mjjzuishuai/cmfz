@@ -1,0 +1,53 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /cmfz
+    #提供页面热部署
+    jsp:
+      init-parameters:
+        development: true
+
+
+spring:
+
+  redis:
+    host: 192.168.16.15
+    port: 6379
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/cmfz?characterEncoding=UTF-8
+    driver-class-name: com.mysql.jdbc.Driver
+  #添加视图解析器
+  mvc:
+    # controller收参数日期格式处理
+    date-format: yyyy-MM-dd HH:mm:ss
+    view:
+      prefix: /
+      suffix: .jsp
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+  #设置代理方式为cglib
+  aop:
+    proxy-target-class: true
+    # controller出参日期格式转换
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    #SpringData链接Es
+    #data:
+      #elasticsearch:
+    #cluster-nodes: 192.168.16.100:9300
+
+mybatis:
+  type-aliases-package: com.baizhi.entity  #指定别名包
+  mapper-locations: com/baizhi/mapper/*Mapper.xml #指定mapper文件的位置
+logging:
+    level:
+     root: info
+     com.baizhi.dao: debug
+     com.baizhi.service: debug
+     com.baizhi.controller: debug

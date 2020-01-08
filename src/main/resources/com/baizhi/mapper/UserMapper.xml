@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.UserDao">
+    <select id="selectByRegisterTime" resultType="Integer">
+        select count(*) from user where sex=#{sex} and DATE_SUB(NOW(),INTERVAL #{day} day) &lt; rigest_date
+    </select>
+
+    <!--查询每个地区的男女数量分布图-->
+    <select id="selectByLocation" resultType="UserLocation" parameterType="String">
+        select location name,count(*) value from user where sex = #{sex} group by location
+    </select>
+    <!--金刚道友随即展示五条数据-->
+    <select id="queryByRand" resultType="User">
+        select * from `user` where id!= #{id} order by rand() limit 5
+    </select>
+</mapper>
