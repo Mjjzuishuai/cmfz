@@ -7,7 +7,7 @@
   <groupId>com.baizhi</groupId>
   <artifactId>cmfz</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>cmfz Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
@@ -123,7 +123,7 @@
       <artifactId>mapper-spring-boot-starter</artifactId>
       <version>2.1.5</version>
     </dependency>
-    <!-- 需要的servletx -->
+    <!-- 需要的servlet -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -148,6 +148,33 @@
       <artifactId>aliyun-java-sdk-core</artifactId>
       <version>4.0.3</version>
     </dependency>
+    <!--shiro 包-->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <!--集成web-->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <!--集成缓存-->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-ehcache</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <!--集成spring-->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-spring</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
+
+
   </dependencies>
 
   <!--指定GoEasy的私有库-->
@@ -161,5 +188,44 @@
     </repository>
   </repositories>
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>1.4.2.RELEASE</version>
+        <!--打jar包注意事项1-->
+        <configuration>
+          <mainClass>com.baizhi.Cmfz</mainClass>
+          <layout>JAR</layout>
+        </configuration>
+      </plugin>
+    </plugins>
+    <resources>
+      <!-- 打包时将jsp文件拷贝到META-INF目录下-->
+      <resource>
+        <!-- 指定resources插件处理哪个目录下的资源文件 -->
+        <directory>src/main/webapp</directory>
+        <!--注意此次必须要放在此目录下才能被访问到-->
+        <targetPath>META-INF/resources</targetPath>
+        <includes>
+          <include>**/**</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/**</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/java</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
   </build>
+
+
 </project>

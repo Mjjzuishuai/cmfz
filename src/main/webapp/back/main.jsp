@@ -1,4 +1,5 @@
 <%@page isELIgnored="false" contentType="text/html; UTF-8" pageEncoding="UTF-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -51,7 +52,7 @@
         <div>
             <!--向右对齐-->
             <ul class="nav navbar-nav navbar-right">
-                <li><a>欢迎:${sessionScope.admin.username}</a></li>
+                <li><a>欢迎:<shiro:principal></shiro:principal></a></li>
                 <li><a href="${pageContext.request.contextPath}/admin/loginOut">退出登陆</a></li>
             </ul>
         </div>
@@ -184,6 +185,25 @@
                         </div>
                     </div>
                 </div>
+                <shiro:hasPermission name="admin:**">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#admin">
+                                超级管理员权限
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="admin" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="nav">
+                                <li><a href="javascript:$('#right').load('./admin.jsp')">管理</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                </shiro:hasPermission>
             </div>
         </div>
         <div class="col-xs-10" id="right">

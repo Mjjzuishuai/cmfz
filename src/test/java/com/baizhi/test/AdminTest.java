@@ -16,8 +16,15 @@ public class AdminTest {
 
     @Test
     public void testSelectOne() {
-        Admin admin = new Admin("1", "admin", "admin");
+        Admin admin = new Admin("1", "admin", "admin",null,null);
         Admin admin1 = adminDao.selectOne(admin);
         System.out.println("admin1 = " + admin1);
+    }
+    //测试五表链接
+
+    @Test
+    public void name() {
+        Admin admin = adminDao.selectAdminInfo("admin");
+        System.out.println("admin = " + admin);
     }
 }

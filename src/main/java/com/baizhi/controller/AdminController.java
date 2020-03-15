@@ -9,13 +9,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.Element;
 import java.io.IOException;
+import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("admin")
 public class AdminController {
     @Autowired
@@ -36,7 +39,6 @@ public class AdminController {
 
     //登陆
     @RequestMapping("login")
-    @ResponseBody
     public String login(Admin admin, HttpSession session, String clientCode) {
         /*判断验证码*/
         //获取服务器里的验证码
@@ -49,6 +51,25 @@ public class AdminController {
         }
         String ss = adminService.selectOne(admin);
         return ss;
+    }
+
+    //茶所有
+    @RequestMapping("selectAll")
+    public List<Admin> selectAll(){
+        List<Admin> admins = adminService.selectAll();
+        System.out.println("admins = " + admins);
+        return admins;
+    }
+    //增删改
+    @RequestMapping("edit")
+    public void edit(Admin admin,String oper){
+        if(oper.equals("edit")){
+            adminService.upDate(admin);
+        }else if(oper.equals("add")){
+            adminService.add(admin);
+        }else {
+            adminService.delete(admin.getId());
+        }
     }
     //安全退出
     @RequestMapping("loginOut")

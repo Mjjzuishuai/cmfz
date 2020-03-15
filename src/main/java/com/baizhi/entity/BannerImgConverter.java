@@ -17,7 +17,7 @@ public class BannerImgConverter extends StringImageConverter {
         String[] split = value.split("/");
         String s = split[split.length - 1];
         String url = property+"\\src\\main\\webapp\\back\\img\\"+s;
-        System.out.println(url);
+
         return new CellData(FileUtils.readFileToByteArray(new File(url)));
     }
 

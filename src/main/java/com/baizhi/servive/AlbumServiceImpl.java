@@ -1,6 +1,8 @@
 package com.baizhi.servive;
 
+import com.baizhi.aspect.ClearCache;
 import com.baizhi.aspect.LogAnnotation;
+import com.baizhi.aspect.addCache;
 import com.baizhi.entity.Album;
 import com.baizhi.dao.AlbumDao;
 import com.baizhi.servive.AlbumService;
@@ -26,6 +28,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 
     //分页查所有
+    @addCache(value = "")
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Album> selectByPage(Integer page, Integer rows) {
@@ -53,6 +56,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     //修改一条专辑
+    @ClearCache(value = "")
     @Override
     @LogAnnotation(value = "修改了一部专辑")
     public void upDate(Album album) {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.baizhi.dao.AdminDao">
+    <resultMap id="ad" type="com.baizhi.entity.Admin">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <collection property="roles" ofType="com.baizhi.entity.Role">
+            <id column="id2" property="id"/>
+            <result column="roleName" property="roleName"/>
+            <collection property="resources" ofType="com.baizhi.entity.Resources">
+                <id column="id4" property="id"/>
+                <result column="resourcesName" property="resourcesName"/>
+            </collection>
+        </collection>
+
+    </resultMap>
+    <select id="selectAdminInfo" resultMap="ad" parameterType="String">
+        SELECT * FROM admin a LEFT JOIN admin_role ar ON a.id = ar.adminId
+                            LEFT JOIN role r on ar.roleId = r.id
+                            LEFT JOIN role_resources rr ON r.id = rr.roleId
+                            LEFT JOIN resources re ON rr.resourcesId = re.id
+        where username = #{principal}
+    </select>
+</mapper>

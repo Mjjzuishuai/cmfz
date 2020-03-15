@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (Admin)实体类
@@ -19,11 +21,12 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class Admin implements Serializable {
     private static final long serialVersionUID = 940510564229264729L;
-    
+    @Id
     private String id;
     
     private String username;
     
     private String password;
-
+    private String salt;
+    private List<Role> roles;
 }

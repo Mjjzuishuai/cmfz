@@ -7,6 +7,7 @@ import com.baizhi.entity.Mylog;
 import com.baizhi.entity.UserLocation;
 import com.baizhi.servive.MylogService;
 import com.baizhi.servive.UserService;
+import com.baizhi.util.MyWebWare;
 import io.goeasy.GoEasy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -15,6 +16,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,8 @@ public class MyAspect {
     HttpServletRequest request;
     @Autowired
     MylogService mylogService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Around(value = "@annotation(com.baizhi.aspect.LogAnnotation)")
     public Object myAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -45,6 +49,9 @@ public class MyAspect {
         LogAnnotation 注解 = 方法.getAnnotation(LogAnnotation.class);
         String value = 注解.value();
         //结果是什么
+
+
+
         String status = null;
         try {
             Object proceed = proceedingJoinPoint.proceed();
@@ -104,5 +111,57 @@ public class MyAspect {
         GoEasy goEasy = new GoEasy( "http://rest-hangzhou.goeasy.io","BC-198a2526cea5481f81c9f8fcdffaafb1");
         goEasy.publish("cmfz",s);
         return null;
+    }
+
+
+    //通用缓存
+    @Around(value = "@annotation(com.baizhi.aspect.addCache)")
+    public Object addCache(ProceedingJoinPoint proceedingJoinPoint){
+        //思路:
+        //依然使用redis数据库hash存储方式存储缓存,使用自定义注解的方式切入,并拿类对象作为存储的Key,方法名和存数作为hash的key
+        //当走查询的时候经过切面类，判断redis中有没有数据，有则返回，没有则执行后续方法，并放到redis中。
+
+        //代码:
+        //通过工具类拿reidsTemplate对象
+        RedisTemplate redisTemplate = (RedisTemplate) MyWebWare.getBeanByName("redisTemplate");
+        //拿目标类类对象作为 redis存储过程中的key
+          String clazz = proceedingJoinPoint.getTarget().getClass().toString();
+        System.out.println("clazz = " + clazz);
+        String name = proceedingJoinPoint.getSignature().getName();
+        Object[] args = proceedingJoinPoint.getArgs();
+        String key = name;
+        for (int i = 0; i < args.length; i++) {
+            key += args[i];
+        }
+        //判断reids中有没有数据（也就是有没有缓存）
+        Object o = redisTemplate.opsForHash().get(clazz, key);
+        //如果redis中有数据,则返回查询结果
+        if(o!=null){
+            return o;
+        }
+        //如果没有数据,则执行后续方法,并存入数据库
+        try {
+            Object proceed = proceedingJoinPoint.proceed();
+            redisTemplate.opsForHash().put(clazz,key,proceed);
+            return proceed;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return null;
+        }
+    }
+    //接上：一旦执行增删改方法，立即删除缓存
+    @Around(value = "@annotation(com.baizhi.aspect.ClearCache)")
+    public Object clearCache(ProceedingJoinPoint proceedingJoinPoint){
+        //通过工具类拿reidsTemplate对象
+        RedisTemplate redisTemplate = (RedisTemplate) MyWebWare.getBeanByName("redisTemplate");
+        //拿目标类类对象作为 redis存储过程中的key
+        String clazz = proceedingJoinPoint.getTarget().getClass().toString();
+        redisTemplate.delete(clazz);
+        try {
+            return proceedingJoinPoint.proceed();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return null;
+        }
     }
 }

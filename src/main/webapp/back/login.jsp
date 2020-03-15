@@ -1,5 +1,6 @@
 <%@page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html>
 <head>
@@ -31,7 +32,10 @@
                         if(result == "验证码不正确"){
                             $("#msg").empty();
                             $("#msg").html("<font color='red'>" + result + "</font>")
-                        } else if (result == "用户名或密码错误") {
+                        } else if (result == "用户名不正确") {
+                            $("#msg").empty();
+                            $("#msg").html("<font color='red'>" + result + "</font>")
+                        } else if (result == "密码不正确") {
                             $("#msg").empty();
                             $("#msg").html("<font color='red'>" + result + "</font>")
                         } else{
